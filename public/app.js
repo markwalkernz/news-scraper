@@ -14,7 +14,7 @@ $("#get-listings").click(function() {
       // For each one
       for (var i = 0; i < data.length; i++) {
         // Display the apropos information on the page
-        $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
+        $("#articles").append("<div class='panel panel-default listing' data-id='" + data[i]._id + "'><h4>" + data[i].title + "</h4><a href='" + data[i].link + "' target='_blank'>" + data[i].link + "</a></div>");
       }
     });
   });
@@ -25,7 +25,7 @@ $.getJSON("/savedArticles", function(data) {
   // For each one
   for (var i = 0; i < data.length; i++) {
     // Display the apropos information on the page
-    $("#savedArticles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
+    $("#savedArticles").append("<div class='panel panel-default listing' data-id='" + data[i]._id + "'><h4>" + data[i].title + "</h4><a href='" + data[i].link + "' target='_blank'>" + data[i].link + "</a></div>");
   }
 });
 
