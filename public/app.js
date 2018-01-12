@@ -1,11 +1,24 @@
-// Grab the articles as a json
-// $.getJSON("/articles", function(data) {
-//   // For each one
-//   for (var i = 0; i < data.length; i++) {
-//     // Display the apropos information on the page
-//     $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
-//   }
-// });
+$("#get-listings").click(function() {
+  // Make an ajax call to trigger a scrape to the database
+  $.ajax({
+    method: "GET",
+    url: "/scrape"
+  })
+  // With that done, add the articles to the page
+  .done(function() {
+
+    $("#articles").empty();
+
+    // Grab the articles as a json
+    $.getJSON("/articles", function(data) {
+      // For each one
+      for (var i = 0; i < data.length; i++) {
+        // Display the apropos information on the page
+        $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
+      }
+    });
+  });
+});
 
 // Grab the saved articles as a json
 $.getJSON("/savedArticles", function(data) {

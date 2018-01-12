@@ -22,6 +22,13 @@ var ArticleSchema = new Schema({
   note: {
     type: Schema.Types.ObjectId,
     ref: "Note"
+  },
+  // `saved` is a boolean that indicates whether the article has been saved
+  // when an article is first scraped and added to the db, saved is set to false
+  saved: {
+    type: Boolean,
+    required: true,
+    default: false
   }
 });
 
