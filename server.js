@@ -38,6 +38,7 @@ mongoose.connect(MONGODB_URI, {
 });
 
 // Setup for Handlebars.
+// TODO: convert html pages to Handlebars
 // var exphbs = require("express-handlebars");
 
 // app.engine("handlebars", exphbs({ 
@@ -56,28 +57,28 @@ app.get("/scrape", function(req, res) {
     // load the response into cheerio
     var $ = cheerio.load(response.data);
  
-    // for each listing
+    // for each article
     $(".item").each(function(i, element) {
       // Save an empty result object
       var result = {};
-      var listingTitle = "";
+      var articleTitle = "";
 
-      // Find the title of the listing
-      listingTitle = $(this)
+      // Find the title of the article
+      articleTitle = $(this)
         .children("a")
         .children("h3")
         .text();
 
       // tidy up the title and add it to the result object
-      listingTitle = listingTitle.replace("Image\n      \n      \n    \n        \n        \n          ","{");
-      listingTitle = listingTitle.replace("\n           \n\n","}");
+      articleTitle = articleTitle.replace("Image\n      \n      \n    \n        \n        \n          ","{");
+      articleTitle = articleTitle.replace("\n           \n\n","}");
 
-      var startPosition = listingTitle.indexOf("{") + 1;
-      var endPosition = listingTitle.indexOf("}");
+      var startPosition = articleTitle.indexOf("{") + 1;
+      var endPosition = articleTitle.indexOf("}");
 
-      result.title = listingTitle.slice(startPosition,endPosition);
+      result.title = articleTitle.slice(startPosition,endPosition);
 
-      // Find the href of the listing and add it to the result object
+      // Find the href of the article and add it to the result object
       result.link = $(this)
         .children("a")
         .attr("href");
@@ -114,7 +115,7 @@ app.get("/articles", function(req, res) {
 // Route for getting saved Articles from the db
 app.get("/savedArticles", function(req, res) {
   db.Article
-  .find({})
+  .find({saved: true })
   .then(function(dbArticles) {
     // If any articles are found, send them to the client
     res.json(dbArticles);
@@ -162,10 +163,10 @@ app.post("/articles/:id", function(req, res) {
   });
 });
 
-// Route for saving an article
-app.get("/save/:id", function(req, res) {
+// Route for saving or unsaving an article
+app.post("/save", function(req, res) {
   db.Article
-  .findOneAndUpdate({ _id: req.params.id }, { saved: true }, { new: true })
+  .findOneAndUpdate({ _id: req.body.id }, { saved: req.body.saved }, { new: true })
   .then(function(dbArticle) {
     // send the article back to the client
     res.json(dbArticle);
@@ -176,6 +177,19 @@ app.get("/save/:id", function(req, res) {
   });
 });
 
+// TODO: Route for deleting a note
+// app.get("/deletenote/:id", function(req, res) {
+//   db.Article
+//   .findOneAndUpdate({ note: req.params.id }, { note: null }, { new: true })
+//   .then(function(dbArticle) {
+//     // send the article back to the client
+//     res.json(dbArticle);
+//   })
+//   .catch(function(err) {
+//     // If an error occurs, send it back to the client
+//     res.json(err);
+//   });
+// });
 
 // Start the server
 app.listen(port, function() {

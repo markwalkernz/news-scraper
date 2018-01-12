@@ -1,5 +1,5 @@
 // click on the `todays listings` button
-$("#get-listings").click(function() {
+$("#get-articles").click(function() {
   // Make an ajax call to trigger a scrape to the database
   $.ajax({
     method: "GET",
@@ -15,17 +15,17 @@ $("#get-listings").click(function() {
       // For each one
       for (var i = 0; i < data.length; i++) {
         // Display the apropos information on the page
-        $("#articles").append("<div class='panel panel-default listing' data-id='" + data[i]._id + "'><h4>" + data[i].title + "</h4>"
+        $("#articles").append("<div class='panel panel-default article' data-id='" + data[i]._id + "'><h4>" + data[i].title + "</h4>"
           + "<a href='" + data[i].link + "' target='_blank'>Click here for event details</a>"
-          + "<button class = 'save-listing btn btn-default pull-right' data-id='" + data[i]._id + "'>Save Listing</button></div>"
+          + "<button class = 'save-article btn btn-default pull-right' data-id='" + data[i]._id + "'>Save Listing</button></div>"
         );
       }
     });
   });
 });
 
-// click on the `save listing` button 
-$(document).on("click", ".save-listing", function() {
+// click on the `save article` button 
+$(document).on("click", ".save-article", function() {
 
   // Grab the id associated with the article from the submit button
   var thisId = $(this).attr("data-id");
@@ -34,10 +34,14 @@ $(document).on("click", ".save-listing", function() {
   $(this).text("Saved");
   $(this).attr("disabled", "disabled");
 
-  // Run a GET request to change the article to saved, using what's entered in the inputs
+  // Run a POST request to change the article to saved
   $.ajax({
-    method: "GET",
-    url: "/save/" + thisId,
+    method: "POST",
+    url: "/save",
+    data: {
+      id: thisId,
+      saved: true
+    }
   })
   // With that done
   .done(function(data) {

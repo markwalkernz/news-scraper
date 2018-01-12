@@ -3,16 +3,19 @@ $.getJSON("/savedArticles", function(data) {
   // For each one
   for (var i = 0; i < data.length; i++) {
     // Display the apropos information on the page
-    $("#savedArticles").append("<div class='panel panel-default listing' data-id='" + data[i]._id + "'><h4>" + data[i].title + "</h4>"
-      + "<a href='" + data[i].link + "' target='_blank'>Click here for event details</a></div>");
+    $("#savedArticles").append("<div class='panel panel-default article' data-id='" + data[i]._id + "'><h4>" + data[i].title + "</h4>"
+      + "<a href='" + data[i].link + "' target='_blank'>Click here for event details</a>"
+      + "<button class = 'add-note btn btn-default pull-right' data-id='" + data[i]._id + "'>Notes</button>"
+      + "<button class = 'unsave btn btn-default pull-right' data-id='" + data[i]._id + "'>Remove</button></div>"
+    );
   };
 });
 
-// Whenever someone clicks an h4 tag
-$(document).on("click", "h4", function() {
+// Click on `add note` button
+$(document).on("click", ".add-note", function() {
   // Empty the notes from the note section
   $("#notes").empty();
-  // Save the id from the p tag
+  // Save the id from the button
   var thisId = $(this).attr("data-id");
 
   // Now make an ajax call for the Article
@@ -31,6 +34,8 @@ $(document).on("click", "h4", function() {
       $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
       // A button to submit a new note, with the id of the article saved to it
       $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
+      // TODO: A button to delete a note
+      //$("#notes").append("<button data-id='" + data._id + "' id='deletenote'>Delete Note</button>");
 
       // If there's a note in the article
       if (data.note) {
@@ -57,6 +62,54 @@ $(document).on("click", "#savenote", function() {
       // Value taken from note textarea
       body: $("#bodyinput").val()
     }
+  })
+    // With that done
+    .done(function(data) {
+      // Log the response
+      console.log(data);
+      // Empty the notes section
+      $("#notes").empty();
+    });
+
+  // Also, remove the values entered in the input and textarea for note entry
+  $("#titleinput").val("");
+  $("#bodyinput").val("");
+});
+
+// click the unsave button for an article
+$(document).on("click", ".unsave", function() {
+  // Grab the id associated with the article from the button
+  var thisId = $(this).attr("data-id");
+
+  // Run a POST request to change the article to saved
+  $.ajax({
+    method: "POST",
+    url: "/save",
+    data: {
+      id: thisId,
+      saved: false
+    }
+  })
+  // With that done
+  .done(function(data) {
+    console.log(data);
+  });
+
+  // Also, remove the article from the page
+  var articleSelector = ".article[data-id='" + thisId + "']";
+  $(articleSelector).remove();
+});
+
+// click the deletenote button
+// TODO: deletenote route not working so deletenote button has been commented out above
+$(document).on("click", "#deletenote", function() {
+  // Grab the id associated with the article from the button
+  var thisId = $(this).attr("data-id");
+
+  // Run a GET request to delete the note
+  $.ajax({
+    method: "GET",
+    url: "/deletenote/" + thisId,
   })
     // With that done
     .done(function(data) {
