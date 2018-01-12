@@ -1,36 +1,15 @@
-$("#get-listings").click(function() {
-  // Make an ajax call to trigger a scrape to the database
-  $.ajax({
-    method: "GET",
-    url: "/scrape"
-  })
-  // With that done, add the articles to the page
-  .done(function() {
-
-    $("#articles").empty();
-
-    // Grab the articles as a json
-    $.getJSON("/articles", function(data) {
-      // For each one
-      for (var i = 0; i < data.length; i++) {
-        // Display the apropos information on the page
-        $("#articles").append("<div class='panel panel-default listing' data-id='" + data[i]._id + "'><h4>" + data[i].title + "</h4><a href='" + data[i].link + "' target='_blank'>Click here for event details</a></div>");
-      }
-    });
-  });
-});
-
 // Grab the saved articles as a json
 $.getJSON("/savedArticles", function(data) {
   // For each one
   for (var i = 0; i < data.length; i++) {
     // Display the apropos information on the page
-    $("#savedArticles").append("<div class='panel panel-default listing' data-id='" + data[i]._id + "'><h4>" + data[i].title + "</h4><a href='" + data[i].link + "' target='_blank'>Click here for event details</a></div>");
-  }
+    $("#savedArticles").append("<div class='panel panel-default listing' data-id='" + data[i]._id + "'><h4>" + data[i].title + "</h4>"
+      + "<a href='" + data[i].link + "' target='_blank'>Click here for event details</a></div>");
+  };
 });
 
-// Whenever someone clicks a p tag
-$(document).on("click", "p", function() {
+// Whenever someone clicks an h4 tag
+$(document).on("click", "h4", function() {
   // Empty the notes from the note section
   $("#notes").empty();
   // Save the id from the p tag

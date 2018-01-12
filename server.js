@@ -162,6 +162,21 @@ app.post("/articles/:id", function(req, res) {
   });
 });
 
+// Route for saving an article
+app.get("/save/:id", function(req, res) {
+  db.Article
+  .findOneAndUpdate({ _id: req.params.id }, { saved: true }, { new: true })
+  .then(function(dbArticle) {
+    // send the article back to the client
+    res.json(dbArticle);
+  })
+  .catch(function(err) {
+    // If an error occurs, send it back to the client
+    res.json(err);
+  });
+});
+
+
 // Start the server
 app.listen(port, function() {
   console.log("App running on port " + port + "!");
