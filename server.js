@@ -111,6 +111,21 @@ app.get("/articles", function(req, res) {
   });
 });
 
+// Route for getting saved Articles from the db
+app.get("/savedArticles", function(req, res) {
+  db.Article
+  .find({})
+  .then(function(dbArticles) {
+    // If any articles are found, send them to the client
+    res.json(dbArticles);
+  })
+  .catch(function(err) {
+    // If an error occurs, send it back to the client
+    res.json(err);
+  });
+});
+
+
 // Route for grabbing a specific Article by id, populate it with it's note
 app.get("/articles/:id", function(req, res) {
   db.Article
