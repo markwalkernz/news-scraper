@@ -16,6 +16,8 @@ var port = process.env.PORT || 3000;
 
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/newsScraper";
 
+console.log("Using database " + MONGODB_URI);
+
 // Initialize Express
 var app = express();
 
@@ -35,23 +37,47 @@ mongoose.connect(MONGODB_URI, {
   useMongoClient: true
 });
 
+// Setup for Handlebars.
+// var exphbs = require("express-handlebars");
+
+// app.engine("handlebars", exphbs({ 
+//   defaultLayout: "main"
+// }));
+
+// //app.engine('handlebars', hbs.engine);
+// app.set("view engine", "handlebars");
+
 // Routes
 
-// A GET route for scraping the echojs website
+// scrape the news website
 app.get("/scrape", function(req, res) {
-  // First, we grab the body of the html with request
-  axios.get("http://www.echojs.com/").then(function(response) {
-    // Then, we load that into cheerio and save it to $ for a shorthand selector
+  // get the body of the html with request
+  axios.get("https://www.chicagoreader.com/chicago/EventSearch?id=landing&narrowByDate=Today&eventSection=807941").then(function(response) {
+    // load the response into cheerio
     var $ = cheerio.load(response.data);
-    // Now, we grab every h2 within an article tag, and do the following:
-    $("article h2").each(function(i, element) {
+ 
+    // for each listing
+    $(".item").each(function(i, element) {
       // Save an empty result object
       var result = {};
+      var listingTitle = "";
 
-      // Add the text and href of every link, and save them as properties of the result object
-      result.title = $(this)
+      // Find the title of the listing
+      listingTitle = $(this)
         .children("a")
+        .children("h3")
         .text();
+
+      // tidy up the title and add it to the result object
+      listingTitle = listingTitle.replace("Image\n      \n      \n    \n        \n        \n          ","{");
+      listingTitle = listingTitle.replace("\n           \n\n","}");
+
+      var startPosition = listingTitle.indexOf("{") + 1;
+      var endPosition = listingTitle.indexOf("}");
+
+      result.title = listingTitle.slice(startPosition,endPosition);
+
+      // Find the href of the listing and add it to the result object
       result.link = $(this)
         .children("a")
         .attr("href");
@@ -104,9 +130,6 @@ app.get("/articles/:id", function(req, res) {
 
 // Route for saving/updating an Article's associated Note
 app.post("/articles/:id", function(req, res) {
-  // TODO
-  // ====
-  // save the new note that gets posted to the Notes collection
   db.Note
   .create(req.body)
   .then(function(dbNote) {
