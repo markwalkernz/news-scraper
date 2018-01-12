@@ -1,3 +1,5 @@
+
+
 // Grab the saved articles as a json
 $.getJSON("/savedArticles", function(data) {
   // For each one
@@ -95,9 +97,10 @@ $(document).on("click", ".unsave", function() {
     console.log(data);
   });
 
-  // Also, remove the article from the page
+  // remove the article and any notes that might be open from the page
   var articleSelector = ".article[data-id='" + thisId + "']";
   $(articleSelector).remove();
+  $("#notes").empty();
 });
 
 // click the deletenote button
