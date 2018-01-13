@@ -50,10 +50,25 @@ mongoose.connect(MONGODB_URI, {
 
 // Routes
 
+// remove any unsaved articles from the db
+app.get("/clean", function(req, res) {
+  db.Article
+  .remove({saved: false})
+  .then(function(dbArticles) {
+    // If any articles are found, send them to the client
+    res.send("Database updated.");
+  })
+  .catch(function(err) {
+    // If an error occurs, send it back to the client
+    res.json(err);
+  });  
+});
+
 // scrape the news website
 app.get("/scrape", function(req, res) {
   // get the body of the html with request
-  axios.get("https://www.chicagoreader.com/chicago/EventSearch?id=landing&narrowByDate=Today&eventSection=807941").then(function(response) {
+  axios.get("https://www.chicagoreader.com/chicago/EventSearch?id=landing&narrowByDate=Today&eventSection=807941")
+  .then(function(response) {
     // load the response into cheerio
     var $ = cheerio.load(response.data);
  
@@ -63,6 +78,11 @@ app.get("/scrape", function(req, res) {
       var result = {};
       var articleTitle = "";
 
+      // Find the href of the article and add it to the result object
+      result.link = $(this)
+        .children("a")
+        .attr("href");
+
       // Find the title of the article
       articleTitle = $(this)
         .children("a")
@@ -70,30 +90,39 @@ app.get("/scrape", function(req, res) {
         .text();
 
       // tidy up the title and add it to the result object
-      articleTitle = articleTitle.replace("Image\n      \n      \n    \n        \n        \n          ","{");
-      articleTitle = articleTitle.replace("\n           \n\n","}");
+      articleTitle = articleTitle.replace("Image","");
+      articleTitle = articleTitle.replace("Recommended","");
+      articleTitle = articleTitle.replace("17+","");
+      articleTitle = articleTitle.replace("18+","");
+      articleTitle = articleTitle.replace("Soundboard","");
+      articleTitle = articleTitle.replace("All Ages","");
+      articleTitle = articleTitle.replace("Early Warnings (Music)","");
+      articleTitle = articleTitle.replace("Sold Out (Music)","");
 
-      var startPosition = articleTitle.indexOf("{") + 1;
-      var endPosition = articleTitle.indexOf("}");
+      result.title = articleTitle;
 
-      result.title = articleTitle.slice(startPosition,endPosition);
-
-      // Find the href of the article and add it to the result object
-      result.link = $(this)
-        .children("a")
-        .attr("href");
-
-      // Create a new Article using the `result` object built from scraping
+      // use the link to check if a saved record already exists
       db.Article
-        .create(result)
-        .then(function(dbArticle) {
-          // If we were able to successfully scrape and save an Article, send a message to the client
-          res.send("Scrape Complete");
-        })
-        .catch(function(err) {
-          // If an error occurred, send it to the client
-          res.json(err);
-        });
+      .find({link: result.link})
+      .limit(1)
+      .then(function(check) {
+        if(check.length == 0) {
+          // Create a new Article using the `result` object built from scraping
+          db.Article
+          .create(result)
+          .then(function(dbArticle) {
+            // If we were able to successfully scrape and save an Article, send a message to the client
+            res.send("Scrape Complete");
+          })
+          .catch(function(err) {
+            // If an error occurred, send it to the client
+            res.json(err);
+          });
+        } else {
+          console.log(result);
+        }; // end if
+      });
+
     });
   });
 });
@@ -101,7 +130,7 @@ app.get("/scrape", function(req, res) {
 // Route for getting all Articles from the db
 app.get("/articles", function(req, res) {
   db.Article
-  .find({})
+  .find()
   .then(function(dbArticles) {
     // If any articles are found, send them to the client
     res.json(dbArticles);

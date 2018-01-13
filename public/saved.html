@@ -10,7 +10,7 @@
 
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="./assets/css/style.css">
 
   </head>
   <body>
@@ -28,18 +28,35 @@
         </div>
       </nav>
 
-      <div class="jumbotron text-center">
+      <div class="panel text-center">
         <h1>Saved Listings</h1>
       </div>
 
       <div class="row">
-        <div class="col-md-8" id="savedArticles"></div>
-        <div class="col-md-4" id="notes"></div>
+        <div class="col-md-12" id="savedArticles"></div>
       </div>
 
     </div> <!-- container -->
 
-    <script src="saved.js"></script>
+    <!-- Modal -->
+    <div id="notesmodal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Note</h4>
+          </div>
+          <div class="modal-body" id="notes"></div>
+        </div>
+
+      </div>
+    </div>
+
+
+
+    <script src="./assets/js/saved.js"></script>
 
   </body>
 </html>
