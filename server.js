@@ -101,11 +101,12 @@ app.get("/scrape", function(req, res) {
 
       result.title = articleTitle;
 
-      // use the link to check if a saved record already exists
+      // use the article's link to check if a saved record already exists
       db.Article
       .find({link: result.link})
       .limit(1)
       .then(function(check) {
+        // if no result is returned, then create a new article
         if(check.length == 0) {
           // Create a new Article using the `result` object built from scraping
           db.Article
@@ -118,8 +119,6 @@ app.get("/scrape", function(req, res) {
             // If an error occurred, send it to the client
             res.json(err);
           });
-        } else {
-          console.log(result);
         }; // end if
       });
 

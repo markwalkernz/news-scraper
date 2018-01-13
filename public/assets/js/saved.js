@@ -5,10 +5,14 @@ $.getJSON("/savedArticles", function(data) {
   // For each one
   for (var i = 0; i < data.length; i++) {
     // Display the apropos information on the page
-    $("#savedArticles").append("<div class='panel panel-default article' data-id='" + data[i]._id + "'><h4>" + data[i].title + "</h4>"
+    $("#savedArticles").append("<div class='panel panel-default article' data-id='" + data[i]._id + "'>"
+      + "<div class='row'><div class='col-md-8'>"
+      + "<h4>" + data[i].title + "</h4>"
       + "<a href='" + data[i].link + "' target='_blank'>Click here for event details</a>"
-      + "<button class = 'add-note btn btn-default pull-right' data-toggle='modal' data-target='#notesmodal' data-id='" + data[i]._id + "'>Notes</button>"
-      + "<button class = 'unsave btn btn-default pull-right' data-id='" + data[i]._id + "'>Remove</button></div>"
+      + "</div><div class='col-md-4'>"
+      + "<button class = 'add-note btn btn-primary pull-right' data-toggle='modal' data-target='#notesmodal' data-id='" + data[i]._id + "'>Notes</button>"
+      + "<button class = 'unsave btn btn-primary pull-right' data-id='" + data[i]._id + "'>Remove</button>"
+      + "</div></div></div>"
     );
   };
 });
@@ -35,7 +39,7 @@ $(document).on("click", ".add-note", function() {
       // A textarea to add a new note body
       $("#notes").append("<textarea class='form-control' id='bodyinput' name='body' placeholder='Enter notes here'></textarea>");
       // A button to submit a new note, with the id of the article saved to it
-      $("#notes").append("<button data-id='" + data._id + "' id='savenote' data-dismiss='modal'>Save and Close</button>");
+      $("#notes").append("<br><button class='btn btn-primary' data-id='" + data._id + "' id='savenote' data-dismiss='modal'>Save and Close</button>");
       // TODO: A button to delete a note
       //$("#notes").append("<button data-id='" + data._id + "' id='deletenote'>Delete Note</button>");
 
