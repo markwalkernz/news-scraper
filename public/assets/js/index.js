@@ -22,9 +22,13 @@ $("#get-articles").click(function() {
         // For each one
         for (var i = 0; i < data.length; i++) {
           // Display the apropos information on the page
-          $("#articles").append("<div class='panel panel-default article' data-id='" + data[i]._id + "'><h4>" + data[i].title + "</h4>"
+          $("#articles").append("<div class='panel panel-default article' data-id='" + data[i]._id + "'>"
+            + "<div class='row'><div class='col-md-8'>"
+            + "<h4>" + data[i].title + "</h4>"
             + "<a href='" + data[i].link + "' target='_blank'>Click here for event details</a>"
-            + "<button class = 'save-article btn btn-default pull-right' data-id='" + data[i]._id + "'>Save Listing</button></div>"
+            + "</div><div class='col-md-4'>"
+            + "<button class = 'save-article btn btn-primary pull-right' data-id='" + data[i]._id + "'>Save Listing</button>"
+            + "</div></div></div>"
           );
 
           if (data[i].saved) {

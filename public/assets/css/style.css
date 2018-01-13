@@ -1,3 +1,8 @@
 body {
 	background-image: url("../img/background.jpeg");
 }
+
+button {
+	margin-top: 10px;
+	margin-right: 10px;
+}
