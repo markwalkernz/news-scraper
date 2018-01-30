@@ -8,6 +8,7 @@ $.getJSON("/savedArticles", function(data) {
     $("#savedArticles").append("<div class='panel panel-default article' data-id='" + data[i]._id + "'>"
       + "<div class='row'><div class='col-md-8'>"
       + "<h4>" + data[i].title + "</h4>"
+      + "<p>" + data[i].details + "</p>"
       + "<a href='" + data[i].link + "' target='_blank'>Click here for event details</a>"
       + "</div><div class='col-md-4'>"
       + "<button class = 'add-note btn btn-primary pull-right' data-toggle='modal' data-target='#notesmodal' data-id='" + data[i]._id + "'>Notes</button>"
