@@ -37,17 +37,6 @@ mongoose.connect(MONGODB_URI, {
   useMongoClient: true
 });
 
-// Setup for Handlebars.
-// TODO: convert html pages to Handlebars
-// var exphbs = require("express-handlebars");
-
-// app.engine("handlebars", exphbs({ 
-//   defaultLayout: "main"
-// }));
-
-// //app.engine('handlebars', hbs.engine);
-// app.set("view engine", "handlebars");
-
 // Routes
 
 // remove any unsaved articles from the db
@@ -204,20 +193,6 @@ app.post("/save", function(req, res) {
     res.json(err);
   });
 });
-
-// TODO: Route for deleting a note
-// app.get("/deletenote/:id", function(req, res) {
-//   db.Article
-//   .findOneAndUpdate({ note: req.params.id }, { note: null }, { new: true })
-//   .then(function(dbArticle) {
-//     // send the article back to the client
-//     res.json(dbArticle);
-//   })
-//   .catch(function(err) {
-//     // If an error occurs, send it back to the client
-//     res.json(err);
-//   });
-// });
 
 // Start the server
 app.listen(port, function() {
