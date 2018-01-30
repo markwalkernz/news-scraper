@@ -90,6 +90,12 @@ app.get("/scrape", function(req, res) {
 
       result.title = articleTitle;
 
+      // Find the details of the article and add it to the result object
+      result.details = $(this)
+        .children("a")
+        .children("p")
+        .text();
+
       // use the article's link to check if a saved record already exists
       db.Article
       .find({link: result.link})
